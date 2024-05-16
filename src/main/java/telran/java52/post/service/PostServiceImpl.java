@@ -102,7 +102,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Iterable<PostDto> findPostsByTags(List<String> tags) {
 
-		return postRepository.findPostsByTagsIgnoreCase(tags)
+		return postRepository.findPostsByTagsInIgnoreCase(tags)
 
 				.map(post -> modelMapper.map(post, PostDto.class))
 				.collect(Collectors.toList());
@@ -114,7 +114,8 @@ public class PostServiceImpl implements PostService {
 		LocalDateTime endDate = datePeriodDto.getDateTo().atTime(23, 59, 59);
 
 		return postRepository.findByDateCreatedBetween(startDate, endDate)
-				.map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+				.map(post -> modelMapper.map(post, PostDto.class))
+				.collect(Collectors.toList());
 
 	}
 
