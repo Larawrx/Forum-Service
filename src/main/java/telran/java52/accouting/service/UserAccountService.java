@@ -9,7 +9,6 @@ import telran.java52.accouting.dto.UserRegisterDto;
 import telran.java52.post.service.PostService;
 
 public interface UserAccountService {
-	public static final PostService postService = null;
 	
 	
 	UserDto register(UserRegisterDto userRegisterDto);
