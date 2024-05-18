@@ -1,5 +1,6 @@
 package telran.java52.accouting.service;
 
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
@@ -13,6 +14,7 @@ import telran.java52.accouting.dto.RolesDto;
 import telran.java52.accouting.dto.UserDto;
 import telran.java52.accouting.dto.UserEditDto;
 import telran.java52.accouting.dto.UserRegisterDto;
+import telran.java52.accouting.model.Role;
 
 
 
@@ -90,14 +92,44 @@ public class UserAccountServiceImpl implements UserAccountService {
 
 	@Override
 	public RolesDto changeRolesList(String login, String role, boolean isAddRole) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		User user = userRepository.findById(login).orElseThrow(UserNotFoundException::new);
+	        if (user == null) {
+	            throw new RuntimeException("User not found");
+	        }
+
+	        Role rolee = userRepository.findByRolesIn(role);
+	        if (role == null) {
+	            throw new RuntimeException("Role not found");
+	        }
+
+	        if (isAddRole) {
+	            user.getRoles().add(role);
+	        } else {
+	            user.getRoles().remove(role);
+	        }
+
+	        userRepository.save(user);
+
+	        return new RolesDto(user.getRoles().stream()
+	                .map(Role::getName)
+	                .collect(Collectors.toList()));
+	    }
+	
 
 	@Override
 	public void changePassword(String login, String newPassword) {
-		// TODO Auto-generated method stub
+		  // Находим пользователя по логину
+        User user = userRepository.findById(login).orElseThrow(UserNotFoundException::new);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+       
+        // Обновляем пароль пользователя
+        user.setPassword(newPassword);
 
+        // Сохраняем изменения
+        userRepository.save(user);
+    }
 	}
 
-}
+
